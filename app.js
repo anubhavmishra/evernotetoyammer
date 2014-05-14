@@ -1,14 +1,16 @@
 /**
  *	Module dependencies.
  *	Author: Anubhav Mishra 
- */
+ **/
  
 var express = require('express');
 var routes = require('./routes');
+var evernoteroutes = require('./routes/evernote');
 var http = require('http');
 var https = require('https');
 var path = require('path');
 var fs = require("fs");
+var RedisStore = require('connect-redis')(express); 
 var app = express();
 
 // all environments
@@ -43,7 +45,12 @@ if ('development' == app.get('env')) {
 }  
 
 // Index Page
-app.get('/', routes.index); 
+app.get('/', routes.index);
+app.get('/evernote', evernoteroutes.index)
+app.get('/oauth', evernoteroutes.oauth);
+app.get('/oauth_callback', evernoteroutes.oauth_callback);
+app.get('/clear', evernoteroutes.clear);
+
 
 // Create server
 http.createServer(app).listen(3000, function(){
