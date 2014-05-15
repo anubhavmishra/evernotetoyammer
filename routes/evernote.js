@@ -1,7 +1,7 @@
 var Evernote = require('evernote').Evernote;
 
 var config = require('../config.json');
-var callbackUrl = "http://node.anubhavmishra.com:3000/oauth_callback";
+var callbackUrl = config.HOST_URL + "/oauth_callback";
 
 // home page
 exports.index = function(req, res) {
@@ -14,10 +14,10 @@ exports.index = function(req, res) {
     var noteStore = client.getNoteStore();
     noteStore.listNotebooks(function(err, notebooks){
       req.session.notebooks = notebooks;
-      res.render('index', { session: req.session });
+      res.render('evernote', { notebooks: req.session.notebooks, token: token });
     });
   } else {
-    res.render('index');
+    res.redirect('/');
   }
 };
 
@@ -32,7 +32,7 @@ exports.oauth = function(req, res) {
   client.getRequestToken(callbackUrl, function(error, oauthToken, oauthTokenSecret, results){
     if(error) {
       req.session.error = JSON.stringify(error);
-      res.redirect('/');
+      res.redirect('/evernote');
     }
     else { 
       // store the tokens in the session
@@ -72,9 +72,28 @@ exports.oauth_callback = function(req, res) {
         req.session.edamExpires = results.edam_expires;
         req.session.edamNoteStoreUrl = results.edam_noteStoreUrl;
         req.session.edamWebApiUrlPrefix = results.edam_webApiUrlPrefix;
-        res.redirect('/');
+        res.redirect('/evernote');
       }
     });
+};
+
+exports.get_notes = function(req, res){
+    
+  if(req.session.oauthAccessToken) {
+    var token = req.session.oauthAccessToken;
+    var client = new Evernote.Client({
+      token: token,
+      sandbox: config.SANDBOX
+    });
+    var noteStore = client.getNoteStore();
+    
+    noteStore.findNotes(function(err, notes){
+      req.session.notes = notes;
+      res.render('evernote', { notebooks: req.session.notebooks, token: token });
+    });
+  } else {
+    res.redirect('/');
+  }
 };
 
 // Clear session

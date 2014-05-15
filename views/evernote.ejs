@@ -13,18 +13,18 @@
           
           <br><br><br>
           
-          <% if(email != null) { %>
+          <% if(token) { %>
                 
+                <!--<%- JSON.stringify(notebooks) %>-->
+                <% for (var i = 0; i < notebooks.length; ++i){ %>
+                    <p><%= notebooks[i].name %></p>
+                <% }%>
+                
+          <% } else { %>
+          
                 <span id="spinner" style="display: none;"><i class="fa fa-refresh fa-spin fa-4x"></i></span>
                 <a href="/oauth"><button id="connect-evernote" class="btn btn-lg btn-primary">CONNECT TO EVERNOTE</button></a>
                 
-          <% } else { %>
-            <form class="col-lg-12" action="/signup" method="post">
-                <div class="input-group" style="width:340px;text-align:center;margin:0 auto;">
-                    <input class="form-control input-lg" title="" placeholder="Enter your email" type="text" name="email">
-                    <span class="input-group-btn"><button class="btn btn-lg btn-primary" type="submit">SIGN UP</button></span>
-                </div>
-            </form>
           <% }%>
         </div>
         

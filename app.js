@@ -1,11 +1,14 @@
 /**
- *	Module dependencies.
- *	Author: Anubhav Mishra 
+ *
+ * Module dependencies.
+ * Author: Anubhav Mishra
+ * 
  **/
  
 var express = require('express');
-var routes = require('./routes');
+var routes = require('./routes/index');
 var evernoteroutes = require('./routes/evernote');
+var config = require('./config.json');
 var http = require('http');
 var https = require('https');
 var path = require('path');
@@ -24,7 +27,7 @@ app.use(express.methodOverride());
 app.use(express.cookieParser());
 app.use(express.session({
   store: new RedisStore({}),
-  secret: 'lovemeorhateme', cookie: {maxAge: 86400000}
+  secret: config.COOKIE_SECRET, cookie: {maxAge: 86400000}
 }));
 app.use(app.router);
 app.use(require('stylus').middleware(path.join(__dirname, 'public')));
@@ -50,7 +53,7 @@ app.get('/evernote', evernoteroutes.index)
 app.get('/oauth', evernoteroutes.oauth);
 app.get('/oauth_callback', evernoteroutes.oauth_callback);
 app.get('/clear', evernoteroutes.clear);
-
+app.post('/signup', routes.signup);
 
 // Create server
 http.createServer(app).listen(3000, function(){

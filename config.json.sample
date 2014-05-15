@@ -1,5 +1,7 @@
 {
   "EVERNOTE_API_CONSUMER_KEY" : "YOUR API CONSUMER KEY",
   "EVERNOTE_API_CONSUMER_SECRET" : "YOUR API CONSUMER SECRET",
-  "SANDBOX" : true
+  "SANDBOX" : true,
+  "HOST_URL": "http://localhost:3000",
+  "COOKIE_SECRET": 'verysecretkey'
 }
