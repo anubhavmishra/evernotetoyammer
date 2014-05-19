@@ -54,6 +54,7 @@ app.get('/oauth', evernoteroutes.oauth);
 app.get('/oauth_callback', evernoteroutes.oauth_callback);
 app.get('/clear', evernoteroutes.clear);
 app.post('/signup', routes.signup);
+app.get('/viewNote/:guid', evernoteroutes.viewNotes); 
 
 // Create server
 http.createServer(app).listen(3000, function(){

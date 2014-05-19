@@ -1,5 +1,6 @@
+var redis = require('redis');
+var db = redis.createClient(); 
 var Evernote = require('evernote').Evernote;
-
 var config = require('../config.json');
 var callbackUrl = config.HOST_URL + "/oauth_callback";
 
@@ -11,11 +12,19 @@ exports.index = function(req, res) {
       token: token,
       sandbox: config.SANDBOX
     });
-    var noteStore = client.getNoteStore();
-    noteStore.listNotebooks(function(err, notebooks){
-      req.session.notebooks = notebooks;
-      res.render('evernote', { notebooks: req.session.notebooks, token: token });
-    });
+    var noteFilter, noteStore, notesMetadataResultSpec;
+    noteFilter = new Evernote.NoteFilter;
+    notesMetadataResultSpec = new Evernote.NotesMetadataResultSpec;
+    notesMetadataResultSpec.includeTitle = true;
+    noteStore = client.getNoteStore();
+    
+    noteStore.findNotesMetadata(noteFilter, 0, 100, notesMetadataResultSpec, function(err, notes) {
+      if (err) {
+        console.log(err);
+      }else{
+        res.render('evernote', { notes: notes.notes, token: token });
+      }
+    });  
   } else {
     res.redirect('/');
   }
@@ -75,22 +84,27 @@ exports.oauth_callback = function(req, res) {
         res.redirect('/evernote');
       }
     });
-};
+}; 
 
-exports.get_notes = function(req, res){
-    
+// home page
+exports.viewNotes = function(req, res) {
   if(req.session.oauthAccessToken) {
     var token = req.session.oauthAccessToken;
     var client = new Evernote.Client({
       token: token,
       sandbox: config.SANDBOX
     });
-    var noteStore = client.getNoteStore();
-    
-    noteStore.findNotes(function(err, notes){
-      req.session.notes = notes;
-      res.render('evernote', { notebooks: req.session.notebooks, token: token });
+    noteStore = client.getNoteStore();
+    var noteGuid = req.params.guid;
+    noteStore.getNoteContent(noteGuid, function(err, noteContent){
+        if (err) {
+            console.log(err);
+        }
+        else{
+            res.send(noteContent);
+        }
     });
+    
   } else {
     res.redirect('/');
   }

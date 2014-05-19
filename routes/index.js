@@ -11,7 +11,11 @@ var db = redis.createClient();
 exports.index = function(req, res){
 
   if(req.session.email) {
+    if(req.session.oauthAccessToken) {
+      res.redirect('/evernote');
+    }else{
       res.render('index', { email: req.session.email });
+    }
   }
   else{
       res.render('index', { email: null });

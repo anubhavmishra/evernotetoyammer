@@ -14,11 +14,15 @@
           <br><br><br>
           
           <% if(token) { %>
-                
-                <!--<%- JSON.stringify(notebooks) %>-->
-                <% for (var i = 0; i < notebooks.length; ++i){ %>
-                    <p><%= notebooks[i].name %></p>
+	    <div class="col-md-6 col-md-offset-3">
+		<% for (var i = 0; i < notes.length; ++i){ %>
+                    <p><strong><%= notes[i].title %></strong>
+		       <a href="/viewNote/<%= notes[i].guid %>" target="_blank"><button type="button" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-share-alt"></span> View Note</button></a> 
+		       <a href="#"><button type="button" class="btn btn-default btn-xs"><i class="fa fa-paper-plane"></i> Post to Yammer</button></a>
+		    </p>
                 <% }%>
+                
+	    </div>
                 
           <% } else { %>
           
