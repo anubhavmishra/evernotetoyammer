@@ -6,6 +6,7 @@
  **/
  
 var express = require('express');
+var config = require('./config.json');
 var routes = require('./routes/index');
 var evernoteroutes = require('./routes/evernote');
 var config = require('./config.json');
@@ -14,7 +15,7 @@ var https = require('https');
 var path = require('path');
 var fs = require("fs");
 var RedisStore = require('connect-redis')(express); 
-var app = express();
+var app = express(); 
 
 // all environments
 app.set('views', path.join(__dirname, 'views'));
